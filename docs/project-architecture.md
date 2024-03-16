@@ -7,7 +7,7 @@ This document outlines the architectural design of our React project. The archit
 1. **App Layer**
 2. **Routes Layer**
 3. **Business Layer**
-3. **Shared Layer**
+4. **Shared Layer**
 
 ---
 
@@ -69,7 +69,6 @@ shared/
 ```
 
 ---
-
 
 ## Dependency Flow
 

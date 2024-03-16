@@ -1,18 +1,13 @@
-import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
+import { Outlet, createRootRoute } from "@tanstack/react-router";
+import QencodeLogo from "~/shared/svg-icons/qencode-logo.tsx";
 
 export const Route = createRootRoute({
   component: () => (
-    <>
-      <div className="flex gap-2 p-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>{" "}
-        <Link to="/login" className="[&.active]:font-bold">
-          Login
-        </Link>
+    <main className="flex h-screen items-center justify-center p-4">
+      <div className="m-4 flex w-full max-w-[400px] flex-col gap-y-20">
+        <QencodeLogo className="self-center" />
+        <Outlet />
       </div>
-      <hr />
-      <Outlet />
-    </>
+    </main>
   ),
 });
