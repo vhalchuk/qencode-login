@@ -1,9 +1,16 @@
-import { type FC, useState } from "react";
+import {
+  type DetailedHTMLProps,
+  type FC,
+  type InputHTMLAttributes,
+  useState,
+} from "react";
 import InputField from "~/shared/components/input-field";
 import Eye from "~/shared/svg-icons/eye.tsx";
 import cn from "~/shared/utils/cn";
 
-const PasswordField: FC = () => {
+const PasswordField: FC<
+  DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+> = (props) => {
   const [visible, setVisible] = useState(false);
 
   const toggleVisibility = () => {
@@ -25,6 +32,9 @@ const PasswordField: FC = () => {
           <Eye />
         </button>
       }
+      pattern=".{8,}"
+      title="Password must be at least 8 characters long"
+      {...props}
     />
   );
 };
