@@ -6,19 +6,22 @@ import {
 } from "react";
 import cn from "~/shared/utils/cn";
 
-type Props = {
+export type InputFieldProps = {
   containerClassName?: string;
   rightAdornment?: ReactNode;
+  isError?: boolean;
 } & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
-const InputField: FC<Props> = ({
+const InputField: FC<InputFieldProps> = ({
   containerClassName,
   rightAdornment,
+  isError,
   ...inputProps
 }) => {
   return (
     <div
       className={cn(
+        isError && "ring-2 ring-red-500",
         "relative flex h-[48px] w-full rounded-md border-[1.2px] border-[#D3D8DC] focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500",
         containerClassName,
       )}

@@ -1,5 +1,9 @@
+import { useForm } from "@tanstack/react-form";
 import { createLazyFileRoute, useRouter } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-form-adapter";
+import { z } from "zod";
 import Button from "~/shared/components/button";
+import FieldError from "~/shared/components/field-error";
 import InputField from "~/shared/components/input-field";
 
 export const Route = createLazyFileRoute("/forgot-password")({
@@ -9,19 +13,64 @@ export const Route = createLazyFileRoute("/forgot-password")({
 function ForgotPassword() {
   const router = useRouter();
 
+  const form = useForm({
+    defaultValues: {
+      email: "",
+    },
+    onSubmit: async ({ value }) => {
+      // Do something with form data
+      console.log(value);
+      await new Promise((res) => setTimeout(res, 3000));
+    },
+    validatorAdapter: zodValidator,
+  });
+
   return (
-    <form>
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        void form.handleSubmit();
+      }}
+    >
       <h1 className="text-center text-3xl font-bold">Forgot Password?</h1>
-      <InputField
-        placeholder="Enter your email"
-        type="email"
+      <form.Field
         name="email"
-        required
-        containerClassName="mt-[30px]"
+        validators={{
+          onChange: z.string().email(),
+          onChangeAsyncDebounceMs: 500,
+        }}
+        children={(field) => (
+          <div className="flex flex-col gap-2">
+            <InputField
+              placeholder="Enter your email"
+              type="email"
+              name={field.name}
+              containerClassName="mt-[30px]"
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              isError={field.state.meta.touchedErrors.some(Boolean)}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+            {field.state.meta.touchedErrors ? (
+              <FieldError>{field.state.meta.touchedErrors}</FieldError>
+            ) : null}
+          </div>
+        )}
       />
-      <Button type="submit" className="mt-[30px]" variant="primary">
-        Send
-      </Button>
+      <form.Subscribe
+        selector={(state) => [state.canSubmit, state.isSubmitting]}
+        children={([canSubmit, isSubmitting]) => (
+          <Button
+            disabled={!canSubmit}
+            type="submit"
+            className="mt-[30px]"
+            variant="primary"
+          >
+            {isSubmitting ? "Sending..." : "Send"}
+          </Button>
+        )}
+      />
       <Button
         type="submit"
         className="mt-5"
