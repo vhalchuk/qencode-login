@@ -13,7 +13,7 @@ export const Route = createLazyFileRoute("/login")({
 function Login() {
   return (
     <form>
-      <h1 className="text-center text-3xl">Log in to your account</h1>
+      <h1 className="text-center text-3xl font-bold">Log in to your account</h1>
       <div className="mt-10 flex justify-between gap-4">
         <Button type="button" variant="secondary">
           <GoogleLogo />
