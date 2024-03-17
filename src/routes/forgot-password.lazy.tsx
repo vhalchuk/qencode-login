@@ -2,9 +2,11 @@ import { useForm } from "@tanstack/react-form";
 import { createLazyFileRoute, useRouter } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
+import passwordReset from "~/business/api/password-reset";
 import Button from "~/shared/components/button";
 import FieldError from "~/shared/components/field-error";
 import InputField from "~/shared/components/input-field";
+import { useToast } from "~/shared/components/toast";
 
 export const Route = createLazyFileRoute("/forgot-password")({
   component: ForgotPassword,
@@ -13,14 +15,23 @@ export const Route = createLazyFileRoute("/forgot-password")({
 function ForgotPassword() {
   const router = useRouter();
 
+  const { toast } = useToast();
+
   const form = useForm({
     defaultValues: {
       email: "",
     },
     onSubmit: async ({ value }) => {
-      // Do something with form data
-      console.log(value);
-      await new Promise((res) => setTimeout(res, 3000));
+      try {
+        await passwordReset({
+          email: value.email,
+          redirect_url: `${window.origin}/create-new-password`,
+        });
+      } catch {
+        toast({
+          description: "An error occurred, please try again later",
+        });
+      }
     },
     validatorAdapter: zodValidator,
   });

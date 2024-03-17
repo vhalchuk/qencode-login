@@ -2,11 +2,13 @@ import { useForm } from "@tanstack/react-form";
 import { Link, createLazyFileRoute } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
+import login from "~/business/api/login";
 import Button from "~/shared/components/button";
 import Divider from "~/shared/components/divider";
 import FieldError from "~/shared/components/field-error";
 import InputField from "~/shared/components/input-field";
 import PasswordField from "~/shared/components/password-field";
+import { useToast } from "~/shared/components/toast";
 import GitHubLogo from "~/shared/svg-icons/github-logo.tsx";
 import GoogleLogo from "~/shared/svg-icons/google-logo.tsx";
 
@@ -15,15 +17,21 @@ export const Route = createLazyFileRoute("/login")({
 });
 
 function Login() {
+  const { toast } = useToast();
+
   const form = useForm({
     defaultValues: {
       email: "",
       password: "",
     },
     onSubmit: async ({ value }) => {
-      // Do something with form data
-      console.log(value);
-      await new Promise((res) => setTimeout(res, 3000));
+      try {
+        await login(value);
+      } catch {
+        toast({
+          description: "Failed to login",
+        });
+      }
     },
     validatorAdapter: zodValidator,
   });
@@ -60,6 +68,7 @@ function Login() {
               <InputField
                 placeholder="Work email"
                 type="email"
+                autoComplete="work email"
                 name={field.name}
                 value={field.state.value}
                 onBlur={field.handleBlur}
@@ -82,6 +91,7 @@ function Login() {
             <div className="flex flex-col gap-2">
               <PasswordField
                 name={field.name}
+                autoComplete="current-password"
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
