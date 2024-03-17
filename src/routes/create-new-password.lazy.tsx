@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
 import passwordSet from "~/business/api/password-set";
@@ -23,6 +23,7 @@ export const Route = createLazyFileRoute("/create-new-password")({
 
 function CreateNewPassword() {
   const search = Route.useSearch();
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const { token, secret } = searchSchema.parse(search);
@@ -41,6 +42,9 @@ function CreateNewPassword() {
           password_confirm: confirmPassword,
           token,
           secret,
+        });
+        await navigate({
+          to: "/",
         });
       } catch {
         toast({
