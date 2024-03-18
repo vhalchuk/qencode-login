@@ -1,8 +1,9 @@
 import { useForm } from "@tanstack/react-form";
-import { Link, createLazyFileRoute } from "@tanstack/react-router";
+import { Link, createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
 import login from "~/business/api/login";
+import { useAuthStore } from "~/business/stores/auth";
 import Button from "~/shared/components/button";
 import Divider from "~/shared/components/divider";
 import FieldError from "~/shared/components/field-error";
@@ -18,6 +19,8 @@ export const Route = createLazyFileRoute("/login")({
 
 function Login() {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const setAuthData = useAuthStore((store) => store.setAuthData);
 
   const form = useForm({
     defaultValues: {
@@ -26,7 +29,17 @@ function Login() {
     },
     onSubmit: async ({ value }) => {
       try {
-        await login(value);
+        const { access_token, refresh_token, token_expire } =
+          await login(value);
+
+        setAuthData({
+          accessToken: access_token,
+          refreshToken: refresh_token,
+          tokenExpire: token_expire,
+        });
+
+        void navigate({ to: "/" });
+        window.alert("Logged in successfully. Further flow is not implemented");
       } catch {
         toast({
           description: "Failed to login",

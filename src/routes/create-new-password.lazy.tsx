@@ -43,7 +43,7 @@ function CreateNewPassword() {
           token,
           secret,
         });
-        await navigate({
+        void navigate({
           to: "/",
         });
       } catch {
